@@ -531,7 +531,7 @@ def write_stunnel_config_file(config, state_file_dir, fs_id, mountpoint, tls_por
         'or disable "%%s" in %s.\nSee %s for more detail.' % (CONFIG_FILE,
                                                               'https://docs.aws.amazon.com/console/efs/troubleshooting-tls')
 
-    if config.getboolean(CONFIG_SECTION, 'stunnel_check_cert_hostname'):
+    if config.getboolean(CONFIG_SECTION, 'stunnel_check_cert_hostname') and FS_ID_RE.match(fs_id):
         if check_host_supported:
             efs_config['checkHost'] = dns_name
         else:
