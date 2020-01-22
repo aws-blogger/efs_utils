@@ -68,7 +68,7 @@ except ImportError:
     from urllib.error import URLError
     from urllib.request import urlopen
 
-VERSION = '1.19'
+VERSION = '1.18'
 SERVICE = 'elasticfilesystem'
 
 CONFIG_FILE = '/etc/amazon/efs/efs-utils.conf'
@@ -132,7 +132,7 @@ REQUEST_PAYLOAD = ''
 FS_ID_RE = re.compile('^(?P<fs_id>fs-[0-9a-f]+)$')
 EFS_FQDN_RE = re.compile(r'^(?P<fs_id>fs-[0-9a-f]+)\.efs\.(?P<region>[a-z0-9-]+)\.amazonaws.com$')
 AP_ID_RE = re.compile('^fsap-[0-9a-f]{17}$')
-
+FREE_RE= re.compile("(?=^.{4,253}$)(^((?!-)[a-zA-Z0-9-]{0,62}[a-zA-Z0-9]\.)+[a-zA-Z]{2,63}$)")
 INSTANCE_METADATA_SERVICE_URL = 'http://169.254.169.254/latest/dynamic/instance-identity/document/'
 INSTANCE_IAM_URL = 'http://169.254.169.254/latest/meta-data/iam/security-credentials/'
 SECURITY_CREDS_ECS_URI_HELP_URL = 'https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-iam-roles.html'
@@ -452,7 +452,7 @@ def add_stunnel_ca_options(efs_config, config, options):
     else:
         try:
             stunnel_cafile = config.get(CONFIG_SECTION, 'stunnel_cafile')
-        except NoOptionError:
+        except:
             logging.debug('No CA file configured, using default CA file %s', DEFAULT_STUNNEL_CAFILE)
             stunnel_cafile = DEFAULT_STUNNEL_CAFILE
 
@@ -1259,7 +1259,11 @@ def match_device(config, device):
 
     if FS_ID_RE.match(remote):
         return remote, path
-
+    free_address = FREE_RE.match(remote)
+    if free_address:
+        return remote, path
+    else :
+        fatal_error('The specified IP "%s" is invalid' % remote)
     try:
         primary, secondaries, _ = socket.gethostbyname_ex(remote)
         hostnames = list(filter(lambda e: e is not None, [primary] + secondaries))
@@ -1356,7 +1360,12 @@ def main():
     init_system = get_init_system()
     check_network_status(fs_id, init_system)
 
-    dns_name = get_dns_name(config, fs_id)
+    #dns_name = get_dns_name(config, fs_id)
+    if FS_ID_RE.match(fs_id):
+	dns_name = get_dns_name(config, fs_id)
+
+    else:
+	dns_name = fs_id
     ap_id = options.get('accesspoint')
 
     if 'tls' in options:
