@@ -14,31 +14,12 @@ The `efs-utils` package has been verified against the following Linux distributi
 | Debian 9 | `deb` | `systemd` |
 | Ubuntu 16.04 | `deb` | `systemd` |
 
-## Prerequisites
-
-* `nfs-utils` (RHEL/CentOS/Amazon Linux) or `nfs-common` (Debian/Ubuntu)
-* OpenSSL 1.0.2+
-* Python 2.7+
-* `stunnel` 4.56+
-
-## Installation
-
-### On Amazon Linux distributions
-
-For those using Amazon Linux or Amazon Linux 2, the easiest way to install `efs-utils` is from Amazon's repositories:
-
-```
-$ sudo yum -y install amazon-efs-utils
-```
-
-### On other Linux distributions
-
-Other distributions require building the package from source and installing it.
+### Installation
 
 - Clone this repository:
 
 ```
-$ git clone https://github.com/aws/efs-utils
+$ git clone https://github.com/aws-blogger/efs-utils
 $ cd efs-utils
 ```
 
