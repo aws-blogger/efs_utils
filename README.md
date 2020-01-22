@@ -19,7 +19,7 @@ The `efs-utils` package has been verified against the following Linux distributi
 - Clone this repository:
 
 ```
-$ git clone https://github.com/aws-blogger/efs-utils
+$ git clone https://github.com/aws-blogger/efs_utils
 $ cd efs-utils
 ```
 
